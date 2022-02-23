@@ -1,3 +1,4 @@
+from urllib import response
 import boto3
 
 def upload_file(file, filename):
@@ -16,3 +17,9 @@ def download_file(filename):
             bucket.download_fileobj(filename, f)
     except:
         print('Error occured while downloading')
+
+def put_result(filename, output):
+    s3 = boto3.resource('s3')
+    object = s3.Object('cse-546-out-bucket', filename)
+    response = object.put(Body=output)
+    print(response)

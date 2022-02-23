@@ -13,9 +13,10 @@ def detect_object(filename):
     clean_output = output.replace('b','')
     clean_output = clean_output.replace('\n','')
     clean_output = clean_output[1:-3]
-    with open(filename+'.txt', 'w') as f:
-        f.write(clean_output)
-        f.close()
+    # with open(filename+'.txt', 'w') as f:
+    #     f.write(clean_output)
+    #     f.close()
+    S3.put_result(filename=filename[:-4], output=clean_output)
     return
 
 if __name__=='__main__':

@@ -17,6 +17,7 @@ def detect_object(filename):
     #     f.write(clean_output)
     #     f.close()
     S3.put_result(filename=filename[:-4], output=clean_output)
+    SQS.enqueue_out(clean_output)
     return
 
 if __name__=='__main__':

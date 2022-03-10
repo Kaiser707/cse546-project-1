@@ -19,7 +19,9 @@ def upload_file():
       filename = secure_filename(f.filename)
       S3.upload_file(file=f, filename=filename)
       response = SQS.enqueue(filename)
-      return 'Message id :' + response
+      print('waiting for output')
+      response_to_send = SQS.get_result_to_send(filename)
+      return response_to_send
 
 # @app.route('/putInput')
 # def put_input_item():

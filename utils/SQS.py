@@ -27,3 +27,14 @@ def dequeue():
         message.delete()
         return out
     return ""
+
+def get_result_to_send(filename):
+    while(True):
+        if get_queue_length() == 0:
+            continue
+        sqs = boto3.resource('sqs', region_name='us-east-1')
+        queue = sqs.get_queue_by_name(QueueName='cse546-output-queue')
+        for message in queue.receive_messages():
+            out = message.body
+            if(out.split(' ')[0] == filename):
+                return out

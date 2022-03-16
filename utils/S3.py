@@ -22,4 +22,3 @@ def put_result(filename, output):
     s3 = boto3.resource('s3')
     object = s3.Object('cse-546-out-bucket', filename)
     response = object.put(Body=output)
-    print(response)

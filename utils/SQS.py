@@ -5,6 +5,11 @@ def get_queue_length():
     queue = sqs.get_queue_by_name(QueueName='cse546-input-queue')
     return int(queue.attributes.get('ApproximateNumberOfMessages'))
 
+def get_out_queue_length():
+    sqs = boto3.resource('sqs', region_name='us-east-1')
+    queue = sqs.get_queue_by_name(QueueName='cse546-output-queue')
+    return int(queue.attributes.get('ApproximateNumberOfMessages'))
+
 def enqueue(message):
     sqs = boto3.resource('sqs', region_name='us-east-1')
     queue = sqs.get_queue_by_name(QueueName='cse546-input-queue')
@@ -29,11 +34,11 @@ def dequeue():
     return ""
 
 def get_result_to_send(filename):
+    sqs = boto3.resource('sqs', region_name='us-east-1')
+    queue = sqs.get_queue_by_name(QueueName='cse546-output-queue')
     while(True):
-        if get_queue_length() == 0:
+        if get_out_queue_length() == 0:
             continue
-        sqs = boto3.resource('sqs', region_name='us-east-1')
-        queue = sqs.get_queue_by_name(QueueName='cse546-output-queue')
         for message in queue.receive_messages():
             out = message.body
             if(out.split(' ')[0] == filename):

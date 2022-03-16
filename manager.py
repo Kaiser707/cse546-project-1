@@ -4,11 +4,14 @@ import time
 #from ec2_metadata import ec2_metadata
 
 def auto_scale():
-    #que_len = SQS.get_queue_length()
-    que_len = 13
+    que_len = SQS.get_queue_length()
+    #que_len = 14
     if que_len == 0:
-        print('Shutting all instances')
-        EC2.terminate_all_instances()
+        if EC2.get_running_count() == 0:
+            print('No instances running. Down-scaling not required !')
+            return
+        print('Scaling down and Shutting all instances')
+        EC2.stop_all_instances()
         return
     
     running_count = EC2.get_running_count()
@@ -16,26 +19,26 @@ def auto_scale():
     
     if scaling_param > running_count:
         print('upscaling')
-        upscale(min(scaling_param - running_count, 18 - running_count))
+        upscale(min(scaling_param - running_count, 3 - running_count))
 
-    if scaling_param < running_count:
-        print('downscaling')
+    # if scaling_param < running_count:
+    #     print('downscaling')
 
 def upscale(count):
     if count == 0:
         return
     print('Adding ' + str(count) + " more instances.")
-    instances = EC2.launch_instances(count)
-    for instance in instances:
-        print('Instance added with id : ' + instance)
+    EC2.start_instances(count)
 
 if __name__ == '__main__':
-    
+    #EC2.stop_all_instances()
+    #EC2.launch_instances(3)
+    #EC2.start_instances(2)
     #EC2.launch_instances(count)
-    #EC2.get_running_count()
+    #print(EC2.get_running_count())
     #EC2.get_instances()
     #EC2.get_instance_state()
     while(True):
         print('Checking for auto-scaling')
         auto_scale()
-        time.sleep(100)
+        time.sleep(30)

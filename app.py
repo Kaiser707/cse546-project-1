@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 import boto3
 from utils import SQS
 from utils import S3
+import time
 
 app = Flask(__name__)
 #app.config.from_pyfile('config.py')
@@ -20,8 +21,9 @@ def upload_file():
       S3.upload_file(file=f, filename=filename)
       response = SQS.enqueue(filename)
       print('waiting for output')
-      response_to_send = SQS.get_result_to_send(filename)
-      return response_to_send
+      time.sleep(100)
+      # response_to_send = SQS.get_result_to_send(filename)
+      return 'response_to_send'
 
 # @app.route('/putInput')
 # def put_input_item():

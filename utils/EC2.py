@@ -1,4 +1,5 @@
 import boto3
+import time
 
 def get_running_count():
     ec2 = boto3.resource('ec2', region_name='us-east-1')
@@ -51,6 +52,7 @@ def stop_all_instances():
         return
     instanceIDs = get_instances()
     ec2_client = boto3.client('ec2', region_name='us-east-1')
+    time.sleep(40)
     for instance in instanceIDs:
         if get_instance_state(instance)['Name'] == 'running':
             stop = []
